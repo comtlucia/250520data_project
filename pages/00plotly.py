@@ -63,6 +63,7 @@ fig_pyramid.update_layout(
     yaxis=dict(title='연령'),
     height=650,
     legend=dict(x=0.02, y=1.05, orientation="h")
+)
 )",
     barmode='overlay',
     xaxis=dict(title='인구 비율 (%)', tickvals=[-10, -5, 0, 5, 10], ticktext=['10%', '5%', '0', '5%', '10%']),
@@ -92,6 +93,7 @@ fig_all.update_layout(
     yaxis_title="인구 수",
     height=500,
     margin=dict(t=60, l=60, r=40, b=40)
+)
 )
 )
 
@@ -171,8 +173,7 @@ elif middle_aged_ratio >= 30:
 else:
     st.info("🏙️ 전 세대가 고르게 분포되어 있습니다. 주민센터, 도서관, 복합문화공간 등이 적절합니다.")
 
-st.write("
-" * 3)
+st.write("\n" * 5)
 
 # 📍 유사 지역 시각화 (겹쳐서 비교)
 st.markdown(f"### 🔄 {selected_region} 와(과) 가장 유사한 동: **{best_match}**")
