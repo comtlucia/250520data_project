@@ -117,6 +117,63 @@ for _, row in df_gender.iterrows():
         best_match = row["지역명"]
         best_total = total_vec.tolist()
 
+# 📊 선택 지역 인구 구조 분석
+
+def extract_age(age_label):
+    if '이상' in age_label:
+        return 100
+    return int(age_label.replace('세', '').strip())
+
+age_ranges = list(range(len(ages)))
+under20 = [i for i in age_ranges if extract_age(ages[i]) < 20]
+youth = [i for i in age_ranges if 20 <= extract_age(ages[i]) < 40]
+middle = [i for i in age_ranges if 40 <= extract_age(ages[i]) < 65]
+elderly = [i for i in age_ranges if extract_age(ages[i]) >= 65]
+
+total_population = sum(population_total)
+under20_ratio = round(sum(population_total[i] for i in under20) / total_population * 100, 2)
+youth_ratio = round(sum(population_total[i] for i in youth) / total_population * 100, 2)
+middle_ratio = round(sum(population_total[i] for i in middle) / total_population * 100, 2)
+elderly_ratio = round(sum(population_total[i] for i in elderly) / total_population * 100, 2)
+
+st.markdown(f"""
+### 🧾 {selected_region} 인구 비율 분석
+- 전체 인구: **{total_population:,}명**
+- 👶 0~19세 (어린이·청소년): **{under20_ratio}%**
+- 👩‍🎓 20~39세 (청년): **{youth_ratio}%**
+- 👨‍💼 40~64세 (중장년): **{middle_ratio}%**
+- 🧓 65세 이상 (고령): **{elderly_ratio}%**
+""")
+
+summary = "📌 인구 분석 요약\n\n"
+summary += f"🔢 전체 인구 구성 비율:\n"
+summary += f"- 👶 어린이·청소년 (0~19세): {under20_ratio}%\n"
+summary += f"- 👩‍🎓 청년 (20~39세): {youth_ratio}%\n"
+summary += f"- 👨‍💼 중장년 (40~64세): {middle_ratio}%\n"
+summary += f"- 🧓 고령 (65세 이상): {elderly_ratio}%\n\n"
+
+# 고령층 우세
+if elderly_ratio >= 25:
+    summary += "🔎 고령 인구가 많은 지역입니다. 복지관, 경로당, 실버문화센터 등 고령친화 인프라가 필수이며, 의료 접근성 및 무장애 보행환경 확보가 필요합니다. 전통시장, 한방병원 중심의 상권도 발달하기 좋습니다."
+
+# 청년 중심
+elif youth_ratio >= 30:
+    summary += "🔎 청년층이 많은 지역입니다. 임대주택, 청년창업지원, 스타트업 허브, 코워킹 스페이스, 문화예술 공간과 야간 카페 상권이 어울립니다."
+
+# 어린이·청소년 중심
+elif under20_ratio >= 25:
+    summary += "🔎 어린이·청소년 비중이 높은 지역입니다. 학원가, 놀이공원, 방과후 돌봄센터, 학습카페, 청소년 문화센터 상권이 발달할 가능성이 높습니다."
+
+# 중장년 중심
+elif middle_ratio >= 35:
+    summary += "🔎 중장년 인구 중심 지역입니다. 건강검진센터, 헬스클럽, 평생학습기관, 중년 재취업 프로그램, 생활편의시설 중심의 상권이 유리합니다."
+
+# 균형형
+else:
+    summary += "🔎 전 세대가 고르게 분포한 균형형 지역입니다. 도서관, 공원, 커뮤니티센터, 복합문화시설 같은 가족 친화형 상권이 적합하며, 모든 세대를 연결하는 복합형 공간 설계가 필요합니다."
+
+st.info(summary)
+
 # 📍 유사 지역 시각화 (겹쳐서 비교)
 st.markdown(f"### 🔄 {selected_region} 와(과) 가장 유사한 동: **{best_match}**")
 
