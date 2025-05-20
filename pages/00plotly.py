@@ -16,6 +16,9 @@ df_gender = pd.read_csv(file_gender, encoding="cp949")
 df_gender = df_gender[df_gender["행정구역"].str.contains("(\d+)", regex=True)]
 df_gender["지역명"] = df_gender["행정구역"].str.split("(").str[0].str.strip()
 
+# 동 단위만 필터링
+df_gender = df_gender[df_gender["지역명"].str.endswith("동")]
+
 # 연령 컬럼 정의
 age_columns_male = [col for col in df_gender.columns if "세" in col and "_남_" in col]
 age_columns_female = [col for col in df_gender.columns if "세" in col and "_여_" in col]
@@ -87,7 +90,7 @@ fig_all.update_layout(
 
 st.plotly_chart(fig_all, use_container_width=True)
 
-# 🔍 유사한 지역 찾기 (비율 기반 유클리드 거리)
+# 🔍 유사한 지역 찾기 (동 단위, 비율 기반 유클리드 거리)
 def euclidean_distance(a, b):
     return np.linalg.norm(np.array(a) - np.array(b))
 
@@ -115,7 +118,7 @@ for _, row in df_gender.iterrows():
         best_total = [m + f for m, f in zip(male, female)]
 
 # 📍 유사 지역 시각화 (겹쳐서 비교)
-st.markdown(f"### 🔄 {selected_region} 와(과) 가장 유사한 지역: **{best_match}**")
+st.markdown(f"### 🔄 {selected_region} 와(과) 가장 유사한 동: **{best_match}**")
 
 fig_compare = go.Figure()
 fig_compare.add_trace(go.Scatter(
@@ -134,7 +137,7 @@ fig_compare.add_trace(go.Scatter(
 ))
 
 fig_compare.update_layout(
-    title="👥 선택 지역과 유사 지역의 연령별 인구 구조 비교",
+    title="👥 선택 동과 유사 동의 연령별 인구 구조 비교",
     xaxis_title="연령",
     yaxis_title="인구 수",
     height=500,
