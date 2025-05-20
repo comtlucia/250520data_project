@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import numpy as np
 
 st.set_page_config(layout="wide")
-st.title("🌍 우리 동네 인구 구조, 데이터로 읽다")
+st.title("📍 우리 동네 인구 구조, 데이터로 읽다")
 
 # 파일 경로
 file_gender = "202504_202504_연령별인구현황_월간_남녀구분.csv"
@@ -57,7 +57,14 @@ fig_pyramid.add_trace(go.Bar(
 ))
 
 fig_pyramid.update_layout(
-    title=f"📊 {selected_region} 연령별 인구 피라미드 (비율 기준)",
+    title=dict(text=f"📊 {selected_region} 연령별 인구 피라미드 (비율 기준)", font=dict(size=24)),
+    barmode='overlay',
+    xaxis=dict(title='인구 비율 (%)', tickvals=[-10, -5, 0, 5, 10], ticktext=['10%', '5%', '0', '5%', '10%']),
+    yaxis=dict(title='연령'),
+    height=650,
+    legend=dict(x=0.02, y=1.05, orientation="h")
+)
+)",
     barmode='overlay',
     xaxis=dict(title='인구 비율 (%)', tickvals=[-10, -5, 0, 5, 10], ticktext=['10%', '5%', '0', '5%', '10%']),
     yaxis=dict(title='연령'),
@@ -81,11 +88,13 @@ fig_all = go.Figure(go.Bar(
 ))
 
 fig_all.update_layout(
-    title="📈 전체 연령대별 인구 분포",
+    title=dict(text="📈 전체 연령대별 인구 분포", font=dict(size=24)),
     xaxis_title="연령",
     yaxis_title="인구 수",
     height=500,
     margin=dict(t=60, l=60, r=40, b=40)
+)
+)
 )
 
 st.plotly_chart(fig_all, use_container_width=True)
@@ -122,20 +131,23 @@ def extract_age(age_label):
     if '이상' in age_label:
         return 100
     return int(age_label.replace('세', '').strip())
+
 age_ranges = list(range(0, len(ages)))
-child_indexes = [i for i in age_ranges if extract_age(ages[i]) < 10]
-teen_indexes = [i for i in age_ranges if 10 <= extract_age(ages[i]) < 20]
+under20_indexes = [i for i in age_ranges if extract_age(ages[i]) < 20]
 young_adult_indexes = [i for i in age_ranges if 20 <= extract_age(ages[i]) < 40]
 middle_aged_indexes = [i for i in age_ranges if 40 <= extract_age(ages[i]) < 65]
 elderly_indexes = [i for i in age_ranges if extract_age(ages[i]) >= 65]
 
-child_total = sum([population_total[i] for i in child_indexes])
-teen_total = sum([population_total[i] for i in teen_indexes])
+under20_total = sum([population_total[i] for i in under20_indexes])
 young_adult_total = sum([population_total[i] for i in young_adult_indexes])
-middle_aged_total = sum([population_total[i] for i in middle_aged_indexes])
 middle_aged_total = sum([population_total[i] for i in middle_aged_indexes])
 elderly_total = sum([population_total[i] for i in elderly_indexes])
 total_population = sum(population_total)
+
+under20_ratio = round(under20_total / total_population * 100, 2) if total_population > 0 else 0
+young_adult_ratio = round(young_adult_total / total_population * 100, 2) if total_population > 0 else 0
+middle_aged_ratio = round(middle_aged_total / total_population * 100, 2) if total_population > 0 else 0
+elderly_ratio = round(elderly_total / total_population * 100, 2) if total_population > 0 else 0
 
 child_ratio = round(child_total / total_population * 100, 2) if total_population > 0 else 0
 teen_ratio = round(teen_total / total_population * 100, 2) if total_population > 0 else 0
@@ -144,26 +156,31 @@ middle_aged_ratio = round(middle_aged_total / total_population * 100, 2) if tota
 elderly_ratio = round(elderly_total / total_population * 100, 2) if total_population > 0 else 0
 
 st.markdown(f"""
-## 🧾 {selected_region} 인구 구조 분석 결과
+### 🧾 {selected_region} 인구 구조 분석 결과
 - 전체 인구: **{total_population:,}명**
-- 🧒 어린이 비율 (0~9세): **{child_ratio}%**
-- 🧑 청소년 비율 (10~19세): **{teen_ratio}%**
+- 🧒 어린이 및 청소년 비율 (0~19세): **{under20_ratio}%**
 - 👩‍🎓 청년 비율 (20~39세): **{young_adult_ratio}%**
 - 👨‍💼 중장년층 비율 (40~64세): **{middle_aged_ratio}%**
 - 🧓 고령화 비율 (65세 이상): **{elderly_ratio}%**
 """)
 
-if elderly_ratio >= 20:
-    st.info("🏥 고령화가 매우 높습니다. 복지센터, 건강관리시설, 노인 대상 여가 공간이 필요합니다.")
-elif young_adult_ratio >= 25:
-    st.info("🏫 청년 인구가 많습니다. 청년 주택, 창업 지원, 문화 공간이 유리합니다.")
-elif child_ratio + teen_ratio >= 25:
-    st.info("🧸 어린이와 청소년 인구가 많습니다. 놀이터, 교육시설, 학습지원 공간이 적합합니다.")
-elif middle_aged_ratio >= 30:
-    st.info("🏢 중장년층 비중이 높습니다. 건강관리센터, 직장인 평생교육, 중장년 커뮤니티 공간이 필요합니다.")
+summary_comment = "📌 이 지역은 "
+if elderly_ratio >= 25:
+    summary_comment += "고령 인구가 매우 많은 편입니다. 복지, 건강, 여가 중심의 정책이 중요합니다."
+elif under20_ratio >= 25:
+    summary_comment += "어린이와 청소년이 많은 활력 있는 지역입니다. 교육, 놀이, 안전 환경이 중요합니다."
+elif young_adult_ratio >= 30:
+    summary_comment += "청년층 중심의 지역입니다. 일자리, 주거, 문화공간이 유효합니다."
+elif middle_aged_ratio >= 35:
+    summary_comment += "중장년층 비중이 큰 안정적인 지역입니다. 건강, 평생교육, 지역 커뮤니티가 중요합니다."
 else:
+    summary_comment += "모든 세대가 고르게 분포되어 있습니다. 균형 잡힌 인프라 구축이 유리합니다."
+
+st.info(summary_comment)
     st.info("🏙️ 전 세대가 고르게 분포되어 있습니다. 주민센터, 도서관, 복합문화공간 등이 적절합니다.")
-st.write(" "*3)
+
+st.write("
+" * 3)
 
 # 📍 유사 지역 시각화 (겹쳐서 비교)
 st.markdown(f"### 🔄 {selected_region} 와(과) 가장 유사한 동: **{best_match}**")
