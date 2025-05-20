@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import numpy as np
 
 st.set_page_config(layout="wide")
-st.title("🌍 지역별 인구 데이터 분석")
+st.title("📊 인구 구조로 보는 우리 동네의 삶과 변화")
 
 # 파일 경로
 file_gender = "202504_202504_연령별인구현황_월간_남녀구분.csv"
@@ -57,7 +57,13 @@ fig_pyramid.add_trace(go.Bar(
 ))
 
 fig_pyramid.update_layout(
-    title=f"📊 {selected_region} 연령별 인구 피라미드 (비율 기준)",
+    title=dict(text=f"📊 {selected_region} 연령별 인구 피라미드 (비율 기준)", font=dict(size=24)),
+    barmode='overlay',
+    xaxis=dict(title='인구 비율 (%)', tickvals=[-10, -5, 0, 5, 10], ticktext=['10%', '5%', '0', '5%', '10%']),
+    yaxis=dict(title='연령'),
+    height=650,
+    legend=dict(x=0.02, y=1.05, orientation="h")
+)",
     barmode='overlay',
     xaxis=dict(title='인구 비율 (%)', tickvals=[-10, -5, 0, 5, 10], ticktext=['10%', '5%', '0', '5%', '10%']),
     yaxis=dict(title='연령'),
@@ -81,11 +87,12 @@ fig_all = go.Figure(go.Bar(
 ))
 
 fig_all.update_layout(
-    title="📈 전체 연령대별 인구 분포",
+    title=dict(text="📈 전체 연령대별 인구 분포", font=dict(size=24)),
     xaxis_title="연령",
     yaxis_title="인구 수",
     height=500,
     margin=dict(t=60, l=60, r=40, b=40)
+)
 )
 
 st.plotly_chart(fig_all, use_container_width=True)
@@ -144,7 +151,7 @@ middle_aged_ratio = round(middle_aged_total / total_population * 100, 2) if tota
 elderly_ratio = round(elderly_total / total_population * 100, 2) if total_population > 0 else 0
 
 st.markdown(f"""
-## 🧾 {selected_region} 인구 구조 분석 결과
+### 🧾 {selected_region} 인구 구조 분석 결과
 - 전체 인구: **{total_population:,}명**
 - 🧒 어린이 비율 (0~9세): **{child_ratio}%**
 - 🧑 청소년 비율 (10~19세): **{teen_ratio}%**
@@ -163,6 +170,9 @@ elif middle_aged_ratio >= 30:
     st.info("🏢 중장년층 비중이 높습니다. 건강관리센터, 직장인 평생교육, 중장년 커뮤니티 공간이 필요합니다.")
 else:
     st.info("🏙️ 전 세대가 고르게 분포되어 있습니다. 주민센터, 도서관, 복합문화공간 등이 적절합니다.")
+
+st.write("
+" * 3)
 
 # 📍 유사 지역 시각화 (겹쳐서 비교)
 st.markdown(f"### 🔄 {selected_region} 와(과) 가장 유사한 동: **{best_match}**")
