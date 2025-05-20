@@ -42,14 +42,14 @@ fig_pyramid.add_trace(go.Bar(
     x=[-v for v in male_ratio],
     name="👨 남성 (%)",
     orientation='h',
-    marker=dict(color='rgba(54, 162, 235, 0.7)', line=dict(color='rgba(54, 162, 235, 1.0)', width=1))
+    marker=dict(color='rgba(54, 162, 235, 0.8)')
 ))
 fig_pyramid.add_trace(go.Bar(
     y=ages,
     x=female_ratio,
     name="👩 여성 (%)",
     orientation='h',
-    marker=dict(color='rgba(255, 99, 132, 0.7)', line=dict(color='rgba(255, 99, 132, 1.0)', width=1))
+    marker=dict(color='rgba(255, 99, 132, 0.8)')
 ))
 
 fig_pyramid.update_layout(
@@ -57,35 +57,31 @@ fig_pyramid.update_layout(
     barmode='overlay',
     xaxis=dict(title='인구 비율 (%)', tickvals=[-10, -5, 0, 5, 10], ticktext=['10%', '5%', '0', '5%', '10%']),
     yaxis=dict(title='연령'),
-    plot_bgcolor='white',
     height=650,
     legend=dict(x=0.02, y=1.05, orientation="h")
 )
 
 st.plotly_chart(fig_pyramid, use_container_width=True)
 
-# 📈 전체 인구 그래프 (남+여 합계 기준 상위 연령 10개)
+# 📈 전체 인구 흐름 그래프 (모든 연령 포함)
 population_total = [m + f for m, f in zip(population_male, population_female)]
-df_top10 = pd.DataFrame({"연령": ages, "총인구": population_total})
-df_top10 = df_top10.sort_values(by="총인구", ascending=False).head(10).sort_values(by="총인구")
+df_all = pd.DataFrame({"연령": ages, "총인구": population_total})
 
-fig_top10 = go.Figure(go.Bar(
-    x=df_top10["총인구"],
-    y=df_top10["연령"],
-    orientation='h',
+fig_all = go.Figure(go.Bar(
+    x=df_all["연령"],
+    y=df_all["총인구"],
     marker=dict(color='mediumseagreen'),
-    text=df_top10["총인구"],
+    text=df_all["총인구"],
     textposition='outside',
-    hovertemplate='연령 %{y}<br>인구수 %{x:,}명<extra></extra>'
+    hovertemplate='연령 %{x}<br>인구수 %{y:,}명<extra></extra>'
 ))
 
-fig_top10.update_layout(
-    title="🏆 인구 수 기준 상위 10개 연령대",
-    xaxis_title="인구 수",
-    yaxis_title="연령",
-    plot_bgcolor='white',
+fig_all.update_layout(
+    title="📈 전체 연령대별 인구 분포",
+    xaxis_title="연령",
+    yaxis_title="인구 수",
     height=500,
     margin=dict(t=60, l=60, r=40, b=40)
 )
 
-st.plotly_chart(fig_top10, use_container_width=True)
+st.plotly_chart(fig_all, use_container_width=True)
