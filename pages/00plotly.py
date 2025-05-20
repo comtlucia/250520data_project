@@ -133,12 +133,14 @@ child_total = sum([population_total[i] for i in child_indexes])
 teen_total = sum([population_total[i] for i in teen_indexes])
 young_adult_total = sum([population_total[i] for i in young_adult_indexes])
 middle_aged_total = sum([population_total[i] for i in middle_aged_indexes])
+middle_aged_total = sum([population_total[i] for i in middle_aged_indexes])
 elderly_total = sum([population_total[i] for i in elderly_indexes])
 total_population = sum(population_total)
 
 child_ratio = round(child_total / total_population * 100, 2) if total_population > 0 else 0
 teen_ratio = round(teen_total / total_population * 100, 2) if total_population > 0 else 0
 young_adult_ratio = round(young_adult_total / total_population * 100, 2) if total_population > 0 else 0
+middle_aged_ratio = round(middle_aged_total / total_population * 100, 2) if total_population > 0 else 0
 elderly_ratio = round(elderly_total / total_population * 100, 2) if total_population > 0 else 0
 
 st.markdown(f"""
