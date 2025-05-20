@@ -25,19 +25,19 @@ age_columns_female = [col for col in df_gender.columns if "세" in col and "_여
 ages = [col.split("_")[-1] for col in age_columns_male]
 
 # 값 처리 및 정수형 변환
-population_male = region_data[age_columns_male].str.replace(",", "").fillna("0").astype(int)
-population_female = region_data[age_columns_female].str.replace(",", "").fillna("0").astype(int)
+population_male = region_data[age_columns_male].str.replace(",", "").fillna("0").astype(int).tolist()
+population_female = region_data[age_columns_female].str.replace(",", "").fillna("0").astype(int).tolist()
 
 # 총합 및 비율 계산
-total_male = population_male.sum()
-total_female = population_female.sum()
+total_male = sum(population_male)
+total_female = sum(population_female)
 
-male_ratio = round(population_male / total_male * 100, 2)
-female_ratio = round(population_female / total_female * 100, 2)
+male_ratio = [round(p / total_male * 100, 2) for p in population_male]
+female_ratio = [round(p / total_female * 100, 2) for p in population_female]
 
 # 🧍 인구 피라미드 시각화
 fig_pyramid = go.Figure()
-fig_pyramid.add_trace(go.Bar(y=ages, x=-male_ratio, name="👨 남성 (%)", orientation='h', marker_color='skyblue'))
+fig_pyramid.add_trace(go.Bar(y=ages, x=[-v for v in male_ratio], name="👨 남성 (%)", orientation='h', marker_color='skyblue'))
 fig_pyramid.add_trace(go.Bar(y=ages, x=female_ratio, name="👩 여성 (%)", orientation='h', marker_color='salmon'))
 
 fig_pyramid.update_layout(
@@ -51,7 +51,7 @@ fig_pyramid.update_layout(
 st.plotly_chart(fig_pyramid, use_container_width=True)
 
 # 📈 전체 인구 그래프 (남+여 합계 기준 상위 연령 10개)
-population_total = population_male + population_female
+population_total = [m + f for m, f in zip(population_male, population_female)]
 df_top10 = pd.DataFrame({"연령": ages, "총인구": population_total})
 df_top10 = df_top10.sort_values(by="총인구", ascending=False).head(10).sort_values(by="총인구")
 
