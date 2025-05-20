@@ -136,14 +136,22 @@ youth_ratio = round(sum(population_total[i] for i in youth) / total_population *
 middle_ratio = round(sum(population_total[i] for i in middle) / total_population * 100, 2)
 elderly_ratio = round(sum(population_total[i] for i in elderly) / total_population * 100, 2)
 
-st.markdown(f"""
-### 🧾 {selected_region} 인구 비율 분석
-- 전체 인구: **{total_population:,}명**
-- 👶 0~19세 (어린이·청소년): **{under20_ratio}%**
-- 👩‍🎓 20~39세 (청년): **{youth_ratio}%**
-- 👨‍💼 40~64세 (중장년): **{middle_ratio}%**
-- 🧓 65세 이상 (고령): **{elderly_ratio}%**
-""")
+
+
+summary = "📌 인구 분석 요약
+
+"
+summary += f"🔢 전체 인구 구성 비율:
+"
+summary += f"- 👶 어린이·청소년 (0~19세): {under20_ratio}%
+"
+summary += f"- 👩‍🎓 청년 (20~39세): {youth_ratio}%
+"
+summary += f"- 👨‍💼 중장년 (40~64세): {middle_ratio}%
+"
+summary += f"- 🧓 고령 (65세 이상): {elderly_ratio}%
+
+"
 
 # 고령층 우세
 if elderly_ratio >= 25:
@@ -165,7 +173,7 @@ elif middle_ratio >= 35:
 else:
     summary += "🔎 전 세대가 고르게 분포한 균형형 지역입니다. 도서관, 공원, 커뮤니티센터, 복합문화시설 같은 가족 친화형 상권이 적합하며, 모든 세대를 연결하는 복합형 공간 설계가 필요합니다."
 
-st.info(summary)
+st.markdown(summary)
 
 # 📍 유사 지역 시각화 (겹쳐서 비교)
 st.markdown(f"### 🔄 {selected_region} 와(과) 가장 유사한 동: **{best_match}**")
