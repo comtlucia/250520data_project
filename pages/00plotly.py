@@ -144,6 +144,7 @@ st.markdown(f"""
 - 👨‍💼 40~64세 (중장년): **{middle_ratio}%**
 - 🧓 65세 이상 (고령): **{elderly_ratio}%**
 """)
+st.write("")
 
 if elderly_ratio >= 25:
     st.markdown("""
