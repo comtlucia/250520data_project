@@ -12,18 +12,15 @@ file_gender = "202504_202504_연령별인구현황_월간_남녀구분.csv"
 # CSV 불러오기
 df_gender = pd.read_csv(file_gender, encoding="cp949")
 
-# 행정구역 추출 및 시각화용 위경도 설정 (예시값)
+# 행정구역 이름 정제: 괄호 앞 지역명만 추출
 df_gender = df_gender[df_gender["행정구역"].str.contains("(\d+)", regex=True)]  # 세부 지역만 필터
+df_gender["시군구"] = df_gender["행정구역"].str.split("(").str[0].str.strip()
 
-region_coords = df_gender["행정구역"].str.extract(r"(?P<시군구>.*)\\(")
-df_gender["시군구"] = region_coords["시군구"].str.strip()
-
-# 사용자 선택을 위한 지도 시각화용 임시 위경도 추가 (정식 활용 시 행정구역 중심좌표 활용 필요)
+# 지도 시각화용 임시 위경도 추가 (정식 사용 시 실제 좌표 사용 권장)
 df_gender["lat"] = 37.5665 + (pd.Series(range(len(df_gender))) * 0.005)
 df_gender["lon"] = 126.9780 + (pd.Series(range(len(df_gender))) * 0.005)
 
 # 지도 표시
-tooltip = ["행정구역"]
 st.map(df_gender.rename(columns={"lat": "latitude", "lon": "longitude"}))
 
 selected_region = st.selectbox("\ud83d\udd0d 또는 아래 지도에서 지역을 선택하세요:", options=df_gender["행정구역"])
