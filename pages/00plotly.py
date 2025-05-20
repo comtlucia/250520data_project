@@ -87,39 +87,53 @@ fig_all.update_layout(
 
 st.plotly_chart(fig_all, use_container_width=True)
 
-# 🔍 유사한 지역 찾기 (코사인 유사도 기반)
-def cosine_similarity(a, b):
-    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+# 🔍 유사한 지역 찾기 (비율 기반 유클리드 거리)
+def euclidean_distance(a, b):
+    return np.linalg.norm(np.array(a) - np.array(b))
 
-current_vector = np.array(population_total)
+current_ratio_vector = [m / total_male + f / total_female for m, f in zip(population_male, population_female)]
 best_match = None
-best_score = -1
+best_score = float('inf')
 
 for _, row in df_gender.iterrows():
     if row["지역명"] == selected_region:
         continue
     male = row[age_columns_male].str.replace(",", "").fillna("0").astype(int).tolist()
     female = row[age_columns_female].str.replace(",", "").fillna("0").astype(int).tolist()
-    total = [m + f for m, f in zip(male, female)]
-    score = cosine_similarity(current_vector, total)
-    if score > best_score:
+    total_m = sum(male)
+    total_f = sum(female)
+    ratio_vector = [m / total_m + f / total_f for m, f in zip(male, female)]
+    score = euclidean_distance(current_ratio_vector, ratio_vector)
+    if score < best_score:
         best_score = score
         best_match = row["지역명"]
-        best_total = total
+        best_total = [m + f for m, f in zip(male, female)]
 
-# 📍 유사 지역 시각화
+# 📍 유사 지역 시각화 (겹쳐서 비교)
 st.markdown(f"### 🔄 {selected_region} 와(과) 가장 유사한 지역: **{best_match}**")
-df_similar = pd.DataFrame({"연령": ages, "선택지역": population_total, "유사지역": best_total})
 
 fig_compare = go.Figure()
-fig_compare.add_trace(go.Scatter(x=ages, y=population_total, mode='lines+markers', name=selected_region, line=dict(color='royalblue')))
-fig_compare.add_trace(go.Scatter(x=ages, y=best_total, mode='lines+markers', name=best_match, line=dict(color='orange')))
+fig_compare.add_trace(go.Scatter(
+    x=ages,
+    y=population_total,
+    mode='lines+markers',
+    name=selected_region,
+    line=dict(color='royalblue')
+))
+fig_compare.add_trace(go.Scatter(
+    x=ages,
+    y=best_total,
+    mode='lines+markers',
+    name=best_match,
+    line=dict(color='orangered', dash='dot')
+))
 
 fig_compare.update_layout(
-    title="👥 선택 지역과 유사 지역의 연령별 인구 비교",
+    title="👥 선택 지역과 유사 지역의 연령별 인구 구조 비교",
     xaxis_title="연령",
     yaxis_title="인구 수",
-    height=500
+    height=500,
+    legend=dict(x=0.01, y=1.1, orientation="h")
 )
 
 st.plotly_chart(fig_compare, use_container_width=True)
