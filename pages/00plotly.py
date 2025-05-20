@@ -118,12 +118,16 @@ for _, row in df_gender.iterrows():
         best_total = total_vec.tolist()
 
 # 📊 선택 지역 인구 분석 지표
+def extract_age(age_label):
+    if '이상' in age_label:
+        return 100
+    return int(age_label.replace('세', '').strip())
 age_ranges = list(range(0, len(ages)))
-child_indexes = [i for i in age_ranges if int(ages[i][:-1]) < 10]
-teen_indexes = [i for i in age_ranges if 10 <= int(ages[i][:-1]) < 20]
-young_adult_indexes = [i for i in age_ranges if 20 <= int(ages[i][:-1]) < 40]
-middle_aged_indexes = [i for i in age_ranges if 40 <= int(ages[i][:-1]) < 65]
-elderly_indexes = [i for i in age_ranges if int(ages[i][:-1]) >= 65]
+child_indexes = [i for i in age_ranges if extract_age(ages[i]) < 10]
+teen_indexes = [i for i in age_ranges if 10 <= extract_age(ages[i]) < 20]
+young_adult_indexes = [i for i in age_ranges if 20 <= extract_age(ages[i]) < 40]
+middle_aged_indexes = [i for i in age_ranges if 40 <= extract_age(ages[i]) < 65]
+elderly_indexes = [i for i in age_ranges if extract_age(ages[i]) >= 65]
 
 child_total = sum([population_total[i] for i in child_indexes])
 teen_total = sum([population_total[i] for i in teen_indexes])
