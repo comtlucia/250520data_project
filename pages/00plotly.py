@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import numpy as np
 
 st.set_page_config(layout="wide")
-st.title("🌍 지역별 남녀 인구 피라미드 및 인구 구조 분석")
+st.title("🌍 지역별 인구 데이터 분석")
 
 # 파일 경로
 file_gender = "202504_202504_연령별인구현황_월간_남녀구분.csv"
@@ -144,7 +144,7 @@ middle_aged_ratio = round(middle_aged_total / total_population * 100, 2) if tota
 elderly_ratio = round(elderly_total / total_population * 100, 2) if total_population > 0 else 0
 
 st.markdown(f"""
-### 🧾 {selected_region} 인구 구조 분석 결과
+## 🧾 {selected_region} 인구 구조 분석 결과
 - 전체 인구: **{total_population:,}명**
 - 🧒 어린이 비율 (0~9세): **{child_ratio}%**
 - 🧑 청소년 비율 (10~19세): **{teen_ratio}%**
