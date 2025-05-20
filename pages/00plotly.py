@@ -180,8 +180,8 @@ else:
 - 세대 연계를 고려한 복합형 상권 설계가 바람직합니다.
 """)
 
-st.markdown(summary)
-#st.info(summary)
+#st.markdown(summary)
+st.info(summary)
 
 # 📍 유사 지역 시각화 (겹쳐서 비교)
 st.markdown(f"### 🔄 {selected_region} 와(과) 가장 유사한 동: **{best_match}**")
