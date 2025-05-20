@@ -152,6 +152,7 @@ st.markdown(f"""
 - 👨‍💼 중장년층 비율 (40~64세): **{middle_aged_ratio}%**
 - 🧓 고령화 비율 (65세 이상): **{elderly_ratio}%**
 """)
+st.markdown("""---""")
 
 if elderly_ratio >= 20:
     st.info("🏥 고령화가 매우 높습니다. 복지센터, 건강관리시설, 노인 대상 여가 공간이 필요합니다.")
