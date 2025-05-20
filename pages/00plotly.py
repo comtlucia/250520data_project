@@ -145,13 +145,6 @@ st.markdown(f"""
 - 🧓 65세 이상 (고령): **{elderly_ratio}%**
 """)
 
-summary = "📌 인구 분석 요약\n\n"
-summary += f"🔢 전체 인구 구성 비율:\n"
-summary += f"- 👶 어린이·청소년 (0~19세): {under20_ratio}%\n"
-summary += f"- 👩‍🎓 청년 (20~39세): {youth_ratio}%\n"
-summary += f"- 👨‍💼 중장년 (40~64세): {middle_ratio}%\n"
-summary += f"- 🧓 고령 (65세 이상): {elderly_ratio}%\n\n"
-
 # 고령층 우세
 if elderly_ratio >= 25:
     summary += "🔎 고령 인구가 많은 지역입니다. 복지관, 경로당, 실버문화센터 등 고령친화 인프라가 필수이며, 의료 접근성 및 무장애 보행환경 확보가 필요합니다. 전통시장, 한방병원 중심의 상권도 발달하기 좋습니다."
