@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 
 st.set_page_config(layout="wide")
-st.title("👥 서울특별시 연령별 인구 분석")
+st.title("🌍 지역별 남녀 인구 피라미드 및 인구 구조 분석")
 
 # 파일 경로
 file_gender = "202504_202504_연령별인구현황_월간_남녀구분.csv"
@@ -16,7 +16,7 @@ df_gender = df_gender[df_gender["행정구역"].str.contains("(\d+)", regex=True
 df_gender["시군구"] = df_gender["행정구역"].str.split("(").str[0].str.strip()
 
 # 지역 선택
-selected_region = st.selectbox("📍 지역을 선택하세요:", options=df_gender["행정구역"])
+selected_region = st.selectbox("📍 분석할 지역을 선택하세요:", options=df_gender["행정구역"])
 region_data = df_gender[df_gender["행정구역"] == selected_region].iloc[0]
 
 # 연령 컬럼 정의
@@ -35,17 +35,31 @@ total_female = sum(population_female)
 male_ratio = [round(p / total_male * 100, 2) for p in population_male]
 female_ratio = [round(p / total_female * 100, 2) for p in population_female]
 
-# 🧍 인구 피라미드 시각화
+# 🎯 인구 피라미드 시각화
 fig_pyramid = go.Figure()
-fig_pyramid.add_trace(go.Bar(y=ages, x=[-v for v in male_ratio], name="👨 남성 (%)", orientation='h', marker_color='skyblue'))
-fig_pyramid.add_trace(go.Bar(y=ages, x=female_ratio, name="👩 여성 (%)", orientation='h', marker_color='salmon'))
+fig_pyramid.add_trace(go.Bar(
+    y=ages,
+    x=[-v for v in male_ratio],
+    name="👨 남성 (%)",
+    orientation='h',
+    marker=dict(color='rgba(54, 162, 235, 0.7)', line=dict(color='rgba(54, 162, 235, 1.0)', width=1))
+))
+fig_pyramid.add_trace(go.Bar(
+    y=ages,
+    x=female_ratio,
+    name="👩 여성 (%)",
+    orientation='h',
+    marker=dict(color='rgba(255, 99, 132, 0.7)', line=dict(color='rgba(255, 99, 132, 1.0)', width=1))
+))
 
 fig_pyramid.update_layout(
     title=f"📊 {selected_region} 연령별 인구 피라미드 (비율 기준)",
     barmode='overlay',
     xaxis=dict(title='인구 비율 (%)', tickvals=[-10, -5, 0, 5, 10], ticktext=['10%', '5%', '0', '5%', '10%']),
     yaxis=dict(title='연령'),
-    height=600
+    plot_bgcolor='white',
+    height=650,
+    legend=dict(x=0.02, y=1.05, orientation="h")
 )
 
 st.plotly_chart(fig_pyramid, use_container_width=True)
@@ -59,16 +73,19 @@ fig_top10 = go.Figure(go.Bar(
     x=df_top10["총인구"],
     y=df_top10["연령"],
     orientation='h',
-    marker_color='mediumpurple',
+    marker=dict(color='mediumseagreen'),
     text=df_top10["총인구"],
-    textposition='outside'
+    textposition='outside',
+    hovertemplate='연령 %{y}<br>인구수 %{x:,}명<extra></extra>'
 ))
 
 fig_top10.update_layout(
     title="🏆 인구 수 기준 상위 10개 연령대",
     xaxis_title="인구 수",
     yaxis_title="연령",
-    height=500
+    plot_bgcolor='white',
+    height=500,
+    margin=dict(t=60, l=60, r=40, b=40)
 )
 
 st.plotly_chart(fig_top10, use_container_width=True)
