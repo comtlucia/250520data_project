@@ -91,7 +91,10 @@ st.plotly_chart(fig_all, use_container_width=True)
 def euclidean_distance(a, b):
     return np.linalg.norm(np.array(a) - np.array(b))
 
-current_ratio_vector = [m / total_male + f / total_female for m, f in zip(population_male, population_female)]
+current_ratio_vector = []
+if total_male > 0 and total_female > 0:
+    current_ratio_vector = [m / total_male + f / total_female for m, f in zip(population_male, population_female)]
+
 best_match = None
 best_score = float('inf')
 
@@ -102,6 +105,8 @@ for _, row in df_gender.iterrows():
     female = row[age_columns_female].str.replace(",", "").fillna("0").astype(int).tolist()
     total_m = sum(male)
     total_f = sum(female)
+    if total_m == 0 or total_f == 0:
+        continue
     ratio_vector = [m / total_m + f / total_f for m, f in zip(male, female)]
     score = euclidean_distance(current_ratio_vector, ratio_vector)
     if score < best_score:
