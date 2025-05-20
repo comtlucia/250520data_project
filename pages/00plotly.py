@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import numpy as np
 
 st.set_page_config(layout="wide")
-st.title("📍 우리 동네 인구 구조, 데이터로 읽다")
+st.title("📊 인구 구조로 보는 우리 동네의 삶과 변화")
 
 # 파일 경로
 file_gender = "202504_202504_연령별인구현황_월간_남녀구분.csv"
