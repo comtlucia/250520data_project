@@ -2,3 +2,4 @@ folium
 streamlit_folium
 plotly
 pandas
+yfinance
