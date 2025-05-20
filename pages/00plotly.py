@@ -122,11 +122,13 @@ age_ranges = list(range(0, len(ages)))
 child_indexes = [i for i in age_ranges if int(ages[i][:-1]) < 10]
 teen_indexes = [i for i in age_ranges if 10 <= int(ages[i][:-1]) < 20]
 young_adult_indexes = [i for i in age_ranges if 20 <= int(ages[i][:-1]) < 40]
+middle_aged_indexes = [i for i in age_ranges if 40 <= int(ages[i][:-1]) < 65]
 elderly_indexes = [i for i in age_ranges if int(ages[i][:-1]) >= 65]
 
 child_total = sum([population_total[i] for i in child_indexes])
 teen_total = sum([population_total[i] for i in teen_indexes])
 young_adult_total = sum([population_total[i] for i in young_adult_indexes])
+middle_aged_total = sum([population_total[i] for i in middle_aged_indexes])
 elderly_total = sum([population_total[i] for i in elderly_indexes])
 total_population = sum(population_total)
 
@@ -141,6 +143,7 @@ st.markdown(f"""
 - 🧒 어린이 비율 (0~9세): **{child_ratio}%**
 - 🧑 청소년 비율 (10~19세): **{teen_ratio}%**
 - 👩‍🎓 청년 비율 (20~39세): **{young_adult_ratio}%**
+- 👨‍💼 중장년층 비율 (40~64세): **{middle_aged_ratio}%**
 - 🧓 고령화 비율 (65세 이상): **{elderly_ratio}%**
 """)
 
@@ -150,6 +153,8 @@ elif young_adult_ratio >= 25:
     st.info("🏫 청년 인구가 많습니다. 청년 주택, 창업 지원, 문화 공간이 유리합니다.")
 elif child_ratio + teen_ratio >= 25:
     st.info("🧸 어린이와 청소년 인구가 많습니다. 놀이터, 교육시설, 학습지원 공간이 적합합니다.")
+elif middle_aged_ratio >= 30:
+    st.info("🏢 중장년층 비중이 높습니다. 건강관리센터, 직장인 평생교육, 중장년 커뮤니티 공간이 필요합니다.")
 else:
     st.info("🏙️ 전 세대가 고르게 분포되어 있습니다. 주민센터, 도서관, 복합문화공간 등이 적절합니다.")
 
