@@ -90,13 +90,15 @@ fig_all.update_layout(
 
 st.plotly_chart(fig_all, use_container_width=True)
 
-# 🔍 유사한 지역 찾기 (동 단위, 비율 기반 유클리드 거리)
-def euclidean_distance(a, b):
-    return np.linalg.norm(np.array(a) - np.array(b))
+# 🔍 유사한 지역 찾기 (동 단위, 혼합 기준: 비율 + 절댓값 차이 포함)
+def hybrid_distance(vec1, vec2):
+    vec1 = np.array(vec1)
+    vec2 = np.array(vec2)
+    ratio_dist = np.linalg.norm((vec1 / vec1.sum()) - (vec2 / vec2.sum()))
+    scale_dist = abs(vec1.sum() - vec2.sum()) / vec1.sum()
+    return ratio_dist + scale_dist
 
-current_ratio_vector = []
-if total_male > 0 and total_female > 0:
-    current_ratio_vector = [m / total_male + f / total_female for m, f in zip(population_male, population_female)]
+current_vector = np.array(population_total)
 
 best_match = None
 best_score = float('inf')
@@ -106,16 +108,14 @@ for _, row in df_gender.iterrows():
         continue
     male = row[age_columns_male].str.replace(",", "").fillna("0").astype(int).tolist()
     female = row[age_columns_female].str.replace(",", "").fillna("0").astype(int).tolist()
-    total_m = sum(male)
-    total_f = sum(female)
-    if total_m == 0 or total_f == 0:
+    total_vec = np.array([m + f for m, f in zip(male, female)])
+    if total_vec.sum() == 0:
         continue
-    ratio_vector = [m / total_m + f / total_f for m, f in zip(male, female)]
-    score = euclidean_distance(current_ratio_vector, ratio_vector)
+    score = hybrid_distance(current_vector, total_vec)
     if score < best_score:
         best_score = score
         best_match = row["지역명"]
-        best_total = [m + f for m, f in zip(male, female)]
+        best_total = total_vec.tolist()
 
 # 📍 유사 지역 시각화 (겹쳐서 비교)
 st.markdown(f"### 🔄 {selected_region} 와(과) 가장 유사한 동: **{best_match}**")
