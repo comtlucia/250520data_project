@@ -191,8 +191,27 @@ for insight in insights:
     st.markdown(insight)
     st.write("")  # 인사이트 간 줄바꿈
 
+# 📌 인구 분석 요약 출력
+summary_lines = ["📌 인구 분석 요약:\n"]
 
-st.info(summary)
+if under20_ratio >= 20:
+    summary_lines.append(f"- 👶 어린이·청소년 인구가 {under20_ratio}%로 높습니다.")
+
+if youth_ratio >= 30:
+    summary_lines.append(f"- 👩‍🎓 청년층 비중이 {youth_ratio}%로 지역 활력을 이끌고 있습니다.")
+
+if middle_ratio >= 35:
+    summary_lines.append(f"- 👨‍💼 중장년층이 {middle_ratio}%로 지역 사회의 안정적 기반이 됩니다.")
+
+if elderly_ratio >= 25:
+    summary_lines.append(f"- 🧓 고령 인구가 {elderly_ratio}%로 복지 인프라 수요가 큽니다.")
+
+if len(summary_lines) == 1:
+    summary_lines.append("- 인구 구조가 비교적 균형적으로 분포되어 있습니다.")
+
+st.markdown("\n".join(summary_lines))
+
+#st.info(summary)
 
 # 📍 유사 지역 시각화 (겹쳐서 비교)
 st.markdown(f"### 🔄 {selected_region} 와(과) 가장 유사한 동: **{best_match}**")
