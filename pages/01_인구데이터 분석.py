@@ -228,7 +228,7 @@ elif len(summary_lines) >= 2:
     rest = [f"더불어 {line}" for line in summary_lines[1:]]
     summary_lines = [first] + rest
     
-st.markdown("#### 🧾 인구 분석 요약")  # 제목 표시
+st.markdown("#### ✍️ 인구 분석 요약")  # 제목 표시
 st.info("\n\n".join(summary_lines))   # 강조된 요약 박스 출력
 #st.markdown("  \n\n".join(summary_lines))
 st.write("")
@@ -288,7 +288,7 @@ trait_labels = {
     "elderly": "고령층"
 }
 
-st.markdown("### 🧠 유사 지역 분석 요약")
+st.markdown("### ✍️ 유사 지역 분석 요약")
 
 if similar_traits:
     similar_labels = [trait_labels[g] for g in similar_traits]
@@ -296,11 +296,41 @@ if similar_traits:
     st.info(
         f"{selected_region}과(와) {best_match}은(는) 모두 **{trait_text}** 비중이 유사한 지역입니다.\n\n"
         f"두 지역은 {trait_text}을 중심으로 한 정책, 생활 인프라, 상권 구성이 비슷하게 전개될 가능성이 높습니다.\n\n"
-        "이러한 유사성은 타 지역의 정책 성공 사례를 참고하거나 공동 생활권으로 묶어 계획하는 데 유리한 조건이 됩니다."
     )
 else:
     st.info(
         f"{selected_region}과(와) {best_match}은(는) 전체 인구 구조가 유사하지만, 뚜렷한 세대별 비율 공통점은 상대적으로 적습니다.\n\n"
         "생활 환경이 비슷하더라도, 각 세대별 정책 우선순위는 별도로 고려할 필요가 있습니다."
     )
+    
+# 📍 유사 지역 기반 예측형 멘트
+st.markdown("### 🔮 향후 발생 가능성이 높은 과제 예측")
+
+prediction_lines = []
+
+if "elderly" in similar_traits and elderly_ratio >= 25:
+    prediction_lines.append(
+        "- 두 지역 모두 고령 인구가 많기 때문에, 가까운 미래에 **의료 접근성 확보**, **복지시설 확충**, "
+        "**무장애 인프라 구축**이 중요한 과제가 될 수 있습니다."
+    )
+
+if "youth" in similar_traits and youth_ratio >= 30:
+    prediction_lines.append(
+        "- 청년층이 많은 지역은 **일자리 부족**, **청년 주거 안정성**, **문화 기반 시설의 편중** 문제가 드러날 수 있습니다."
+    )
+
+if "under20" in similar_traits and under20_ratio >= 25:
+    prediction_lines.append(
+        "- 학령 인구가 많은 두 지역은 **학교·돌봄시설 수요 증가**, **교육 인프라 과밀화** 문제를 겪을 가능성이 있습니다."
+    )
+
+if "middle" in similar_traits and middle_ratio >= 35:
+    prediction_lines.append(
+        "- 중장년층이 많은 지역은 **건강검진·재취업 지원**, **가족 중심 커뮤니티 공간 부족** 등의 이슈가 예상됩니다."
+    )
+
+if prediction_lines:
+    st.info("\n\n".join(prediction_lines))
+else:
+    st.info("두 지역은 전체적으로 인구 분포가 유사하지만, 특정 연령층 중심의 구조가 뚜렷하지 않아 당장의 인구 기반 리스크는 낮은 편입니다.")
 
