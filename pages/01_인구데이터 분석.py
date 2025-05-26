@@ -302,35 +302,3 @@ else:
         f"{selected_region}과(와) {best_match}은(는) 전체 인구 구조가 유사하지만, 뚜렷한 세대별 비율 공통점은 상대적으로 적습니다.\n\n"
         "생활 환경이 비슷하더라도, 각 세대별 정책 우선순위는 별도로 고려할 필요가 있습니다."
     )
-    
-# 📍 유사 지역 기반 예측형 멘트
-st.markdown("### 🔮 향후 발생 가능성이 높은 과제 예측")
-
-prediction_lines = []
-
-if "elderly" in similar_traits and elderly_ratio >= 25:
-    prediction_lines.append(
-        "- 두 지역 모두 고령 인구가 많기 때문에, 가까운 미래에 **의료 접근성 확보**, **복지시설 확충**, "
-        "**무장애 인프라 구축**이 중요한 과제가 될 수 있습니다."
-    )
-
-if "youth" in similar_traits and youth_ratio >= 30:
-    prediction_lines.append(
-        "- 청년층이 많은 지역은 **일자리 부족**, **청년 주거 안정성**, **문화 기반 시설의 편중** 문제가 드러날 수 있습니다."
-    )
-
-if "under20" in similar_traits and under20_ratio >= 25:
-    prediction_lines.append(
-        "- 학령 인구가 많은 두 지역은 **학교·돌봄시설 수요 증가**, **교육 인프라 과밀화** 문제를 겪을 가능성이 있습니다."
-    )
-
-if "middle" in similar_traits and middle_ratio >= 35:
-    prediction_lines.append(
-        "- 중장년층이 많은 지역은 **건강검진·재취업 지원**, **가족 중심 커뮤니티 공간 부족** 등의 이슈가 예상됩니다."
-    )
-
-if prediction_lines:
-    st.info("\n\n".join(prediction_lines))
-else:
-    st.info("두 지역은 전체적으로 인구 분포가 유사하지만, 특정 연령층 중심의 구조가 뚜렷하지 않아 당장의 인구 기반 리스크는 낮은 편입니다.")
-
