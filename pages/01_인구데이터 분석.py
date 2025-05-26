@@ -227,8 +227,10 @@ elif len(summary_lines) >= 2:
     first = summary_lines[0]
     rest = [f"더불어 {line}" for line in summary_lines[1:]]
     summary_lines = [first] + rest
-
-st.markdown("  \n\n".join(summary_lines))
+    
+st.markdown("### 🧾 인구 분석 요약")  # 제목 표시
+st.info("\n\n".join(summary_lines))   # 강조된 요약 박스 출력
+#st.markdown("  \n\n".join(summary_lines))
 
 
 # 📍 유사 지역 시각화 (겹쳐서 비교)
